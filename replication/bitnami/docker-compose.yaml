@@ -1,0 +1,62 @@
+networks:
+  pg_cluster:
+    driver: bridge
+
+volumes:
+  master:
+  slave0:
+  slave1:
+
+services:
+  pgsql-master:
+    image: bitnami/postgresql
+    networks:
+      - pg_cluster
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRESQL_PGAUDIT_LOG=READ,WRITE
+      - POSTGRESQL_LOG_HOSTNAME=true
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - ALLOW_EMPTY_PASSWORD=no
+      - POSTGRESQL_PASSWORD=admin123
+    volumes:
+      - master:/bitnami/postgresql
+
+  pgsql-slave0:
+    image: bitnami/postgresql
+    networks:
+      - pg_cluster
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRESQL_PASSWORD=admin123
+      - POSTGRESQL_MASTER_HOST=pgsql-master
+      - POSTGRESQL_PGAUDIT_LOG=READ,WRITE
+      - POSTGRESQL_LOG_HOSTNAME=true
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+    volumes:
+      - slave0:/bitnami/postgresql
+
+  pgsql-slave1:
+    image: bitnami/postgresql
+    networks:
+      - pg_cluster
+    ports:
+      - '5434:5432'
+    environment:
+      - POSTGRESQL_PASSWORD=admin123
+      - POSTGRESQL_MASTER_HOST=pgsql-master
+      - POSTGRESQL_PGAUDIT_LOG=READ,WRITE
+      - POSTGRESQL_LOG_HOSTNAME=true
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+    volumes:
+      - slave1:/bitnami/postgresql
