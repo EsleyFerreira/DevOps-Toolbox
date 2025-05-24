@@ -19,3 +19,7 @@ docker-compose logs
 ```
 docker-compose exec <service_name> <command>
 ```
+
+```
+docker compose --volume
+```
