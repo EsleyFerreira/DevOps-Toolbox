@@ -21,5 +21,5 @@ docker-compose exec <service_name> <command>
 ```
 
 ```
-docker compose --volume
+docker compose down --volume
 ```
